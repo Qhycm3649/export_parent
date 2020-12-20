@@ -4,6 +4,6 @@
     <title>Title</title>
 </head>
 <body>
-    ${errorMsg}
+    访问出现异常！！！${errorMsg}
 </body>
 </html>

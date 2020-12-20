@@ -14,6 +14,15 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <!--  自动类型转换器转换-->
+    <bean id="conversionService2" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="stringToDateConverter"/>
+            </set>
+        </property>
+    </bean>
+
     <!--3 开启注解驱动-->
-    <mvc:annotation-driven></mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionService2"></mvc:annotation-driven>
 </beans>
