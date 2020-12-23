@@ -6,11 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="export_domain" />
         <module name="export_system_service" />
         <module name="export_web_manager" />
-        <module name="export_domain" />
+        <module name="adminlter_Test2" />
         <module name="export_dao" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="adminlte_demo" target="1.8" />
+      <module name="adminlter_Test1" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

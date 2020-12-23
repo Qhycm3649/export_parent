@@ -24,7 +24,62 @@
 
     </resultMap>
 
+
+    <!--查询-->
     <select id="findAll" resultMap="BaseResultMap">
-        select * from ss_company;
+        select * from ss_company
     </select>
+
+
+    <!--查询一个目标公司-->
+    <select id="findById" resultMap="BaseResultMap">
+        select * from ss_company where id=#{id}
+    </select>
+
+    <!--//保存企业
+   void save(Company company);-->
+    <insert id="saves">
+        insert into ss_company VALUES (
+            #{id},
+            #{name},
+            #{expirationDate},
+            #{address},
+            #{licenseId},
+            #{representative},
+            #{phone},
+            #{companySize},
+            #{industry},
+            #{remarks},
+            #{state},
+            #{balance},
+            #{city}
+        )
+    </insert>
+
+
+    <!--//保存修改企业
+    void update(Company company);-->
+    <update id="update">
+        update ss_company SET
+            name=#{name},
+            expiration_date=#{expirationDate},
+            address=#{address},
+            license_id=#{licenseId},
+            representative=#{representative},
+            phone=#{phone},
+            company_size=#{companySize},
+            industry=#{industry},
+            remarks=#{remarks},
+            state=#{state},
+            balance=#{balance},
+            city=#{city}
+        where id=#{id}
+    </update>
+
+
+    <delete id="delete">
+        delete from ss_company where id=#{id}
+    </delete>
+
+
 </mapper>

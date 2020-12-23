@@ -6,6 +6,8 @@
 
     <!--1 加载properties文件-->
     <context:property-placeholder location="classpath:properties/db.properties"/>
+
+
     <!--2 创建德鲁伊连接池-->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="${jdbc.driver}"/>
@@ -13,13 +15,30 @@
         <property name="username" value="${jdbc.username}"/>
         <property name="password" value="${jdbc.password}"/>
     </bean>
+
+
     <!--3 创建工厂对象SqlSessionFactoryBean-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <!--依赖德鲁伊连接池-->
         <property name="dataSource" ref="dataSource"/>
         <!--别名扫描，注意别名扫描是扫描实体类的包-->
         <property name="typeAliasesPackage" value="com.xyou.domain"/>
+        <!--mybatis的分页插件-->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <value>
+                            helperDialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
     </bean>
+
+
     <!--4 包扫描-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
     <!--注销：Ctrl+/  可以先写文字，然后使用这个快捷键进行包裹-->
