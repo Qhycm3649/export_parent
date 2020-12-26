@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xyou.dao.system.RoleDao">
+
+    <!--因为实体类与数据库列名不相同，所以需要结果映射器-->
+    <resultMap id="BadeResultMap" type="com.xyou.domain.system.Role">
+        <id     column="role_id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="remark" property="remark"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="company_id" property="companyId"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+
+    <!--查询所有的角色-->
+     <select id="findAll" resultMap="BadeResultMap">
+            SELECT * FROM pe_role where company_id=#{companyId}
+     </select>
+    <!--根据id进行查询-->
+    <select id="findById" resultMap="BadeResultMap">
+            SELECT * FROM pe_role where role_id=#{id}
+    </select>
+
+    <!--//根据用户的id查找当前用户具备的角色id
+    List<String> findUserRoleByUserIds(String id);-->
+    <select id="findUserRoleByUserId" resultType="string">
+        SELECT role_id FROM pe_role_user WHERE user_id=#{userId}
+    </select>
+
+
+    <!--保存角色
+    void save(Role role);-->
+    <insert id="save">
+        insert into pe_role(role_id, name, remark, order_no,company_id, company_name) values(
+            #{id},
+            #{name},
+            #{remark},
+            #{orderNo},
+            #{companyId},
+            #{companyName}
+        )
+    </insert>
+
+    <!--修改角色
+    void update(Role role);-->
+    <update id="update">
+        UPDATE pe_role SET
+
+         name=#{name},
+         remark=#{remark},
+         order_no=#{orderNo},
+         company_id=#{companyId},
+         company_name=#{companyName}
+        WHERE role_id=#{id};
+
+    </update>
+
+
+    <!--删除角色-->
+    <delete id="delete">
+        delete from pe_role where role_id=#{id}
+    </delete>
+
+    <!--<select id="findByRoleId" resultMap="BadeResultMap">
+        select * from pe_role where role_id=#{id}
+    </select>-->
+
+    <!--//1.先删除该角色的所有权限
+    void deleteModuleByRoleId(String roleid);-->
+    <delete id="deleteModuleByRoleId">
+        DELETE FROM pe_role_module WHERE role_id=#{roleid}
+    </delete>
+
+
+
+    <!--  //    重新为当前的角色添加权限
+      void addRoleModules(String roleid, String[] moduleIds);
+          foreach标签的属性说明：
+                     collection： 要遍历集合对象
+                      item: 当前遍历出来的对象
+                  separator: 分隔符
+      -->
+    <insert id="addRoleModules">
+        INSERT INTO pe_role_module VALUES
+        <foreach collection="moduleIds" item="moduleId" separator=",">
+            (#{roleid},#{moduleId})
+        </foreach>
+    </insert>
+</mapper>

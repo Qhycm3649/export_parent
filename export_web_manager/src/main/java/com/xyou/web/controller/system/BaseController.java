@@ -1,5 +1,6 @@
 package com.xyou.web.controller.system;
 
+import com.xyou.domain.system.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,13 +19,23 @@ public class BaseController {
     @Autowired
     protected HttpSession session;
 
-    //获取登录者的企业id（目前是模拟）
-    public String getLoginCompanyId() {
-        return "1";
+    //获取当前登陆者
+    public User getLoginUser(){
+        User loginUser = (User) session.getAttribute("loginUser");
+        return loginUser;
+    }
+
+
+    //获取登录者的企业id
+    public String getLoginCompanyId(){
+        User loginUser = getLoginUser();
+        return loginUser.getCompanyId();
     }
 
     //获取登陆者企业名称
     public String getLoginCompanyName(){
-        return "传智播客教育股份有限公司";
+        User loginUser = getLoginUser();
+        return loginUser.getCompanyName();
     }
+
 }

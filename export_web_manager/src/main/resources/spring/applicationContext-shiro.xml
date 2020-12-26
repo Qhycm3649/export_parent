@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--1. 创建shiroFilter工厂对象，去处理用户的请求-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+
+        <!--配置过滤器-->
+        <property name="filterChainDefinitions">
+            <value>
+        <!--静态资源应该需要无条件放行-->
+                /css/**=anon
+                /img/**=anon
+                /make/**=anon
+                /plugins/**=anon
+                /login.do/**=anon
+
+                <!--权限校验-->
+                <!--/company/**=perms["企业管理"]
+
+                /system/user/**=perms["用户管理"]-->
+                /**=authc
+            </value>
+        </property>
+        <!--shiro默认对对登陆页面是无条件放行的，shiro默认的登陆页面就是login.jsp-->
+        <property name="loginUrl" value="/login.jsp"/>
+    </bean>
+
+
+    <!--2.创建SecurityManager对象-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="realm"/>
+    </bean>
+
+
+    <!--3.创建Realm对象-->
+    <bean id="realm" class="com.xyou.web.shiro.AuthRealm">
+        <!--加载密码匹配器-->
+        <property name="credentialsMatcher" ref="credentialsMatcher"/>
+    </bean>
+
+    <!--4、创建md5的密码匹配器-->
+    <!--<bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="md5"/>
+    </bean>-->
+
+    <!--将普通的密码匹配器注释了，创建自定义的密码解析器-->
+    <bean id="credentialsMatcher" class="com.xyou.web.shiro.CustomCredentialsMatcher"/>
+
+
+    <!--开启注解权限校验-->
+    <bean id="lifecycleBeanPostProcessor"
+          class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor"/>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+</beans>
