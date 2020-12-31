@@ -3,7 +3,11 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/export_web_manager" />
+    <file type="web" url="file://$PROJECT_DIR$/export_web_portal" />
     <file type="web" url="file://F:/java/saas/adminlter_Test2" />
+  </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
@@ -11,6 +15,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/adminlter_Test1/pom.xml" />
         <option value="F:/java/saas/adminlter_Test2/pom.xml" />
+        <option value="$PROJECT_DIR$/export_company_interface/pom.xml" />
       </list>
     </option>
   </component>

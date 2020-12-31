@@ -7,10 +7,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="export_dao" />
-        <module name="export_system_service" />
+        <module name="export_company_service" />
+        <module name="export_company_interface" />
+        <module name="export_web_portal" />
+        <module name="adminlter_Test2" />
         <module name="export_web_manager" />
         <module name="export_domain" />
-        <module name="adminlter_Test2" />
+        <module name="export_cargo_service" />
+        <module name="export_system_service" />
+        <module name="export_cargo_interface" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

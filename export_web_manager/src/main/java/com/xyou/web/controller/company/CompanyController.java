@@ -1,10 +1,10 @@
 package com.xyou.web.controller.company;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
 import com.xyou.domain.company.Company;
 import com.xyou.service.company.CompanyService;
 import com.xyou.web.controller.system.BaseController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 public class CompanyController extends BaseController {
 
 
-    @Autowired
+    @Reference
     private CompanyService companyService;
 
 

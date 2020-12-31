@@ -30,4 +30,5 @@
         <aop:pointcut id="pt" expression="execution(* com.xyou.service.*.impl.*.*(..))"/>
         <aop:advisor advice-ref="ad" pointcut-ref="pt"/>
     </aop:config>
+
 </beans>
