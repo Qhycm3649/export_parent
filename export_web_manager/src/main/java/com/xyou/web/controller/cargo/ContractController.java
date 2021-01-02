@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.github.pagehelper.PageInfo;
 import com.xyou.domain.cargo.Contract;
 import com.xyou.domain.cargo.ContractExample;
+import com.xyou.domain.system.User;
 import com.xyou.service.cargo.ContractService;
 import com.xyou.web.controller.system.BaseController;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,29 @@ public class ContractController extends BaseController {
     public String list(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "5") Integer pageSize) {
 
         ContractExample contractExample = new ContractExample();
-        contractExample.createCriteria().andCompanyIdEqualTo(getLoginCompanyId());
         contractExample.setOrderByClause("create_time desc");
+        ContractExample.Criteria criteria = contractExample.createCriteria();
+
+        //获得当前登录者
+        User loginUser = getLoginUser();
+        //获得登录者的等级
+        Integer degree = loginUser.getDegree();
+        //判断等级
+        if (degree == 4) {
+            //普通员工
+            criteria.andCreateByEqualTo(loginUser.getId());
+        } else if (degree == 3) {
+            //部门经理
+            criteria.andCreateDeptEqualTo(loginUser.getDeptId());
+        } else if (degree == 2) {
+            //大区经理
+            PageInfo<Contract> pageInfo = contractService.findPageByDeptId(loginUser.getDeptId(), pageNum, pageSize);
+            request.setAttribute("pageInfo",pageInfo);
+            return "cargo/contract/contract-list";
+        } else if (degree==1){
+            //企业管理员
+            criteria.andCompanyIdEqualTo(loginUser.getCompanyId());
+        }
 
         PageInfo<Contract> pageInfo = contractService.findByPage(contractExample, pageNum, pageSize);
         request.setAttribute("pageInfo",pageInfo);

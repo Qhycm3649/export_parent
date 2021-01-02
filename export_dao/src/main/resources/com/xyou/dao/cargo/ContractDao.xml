@@ -361,4 +361,8 @@
     </update>
 
 
+    <!--List<Contract> findByDeptId(String deptId);-->
+    <select id="findByDeptId" resultMap="BaseResultMap">
+        SELECT * FROM co_contract c  WHERE  FIND_IN_SET(c.`create_dept`,getDeptChild(#{deptId}))
+    </select>
 </mapper>

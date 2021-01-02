@@ -39,4 +39,14 @@
 
     <!--注解包扫描-->
     <dubbo:annotation package="com.xyou.web.controller"/>
+
+
+    <!--加载七牛配置文件-->
+    <context:property-placeholder location="classpath:qiniu.properties"/>
+
+    <!--配置文件解析器 易错点：id值是固定不变-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--配置上传文件的最大限制 ， 单位是字节-->
+        <property name="maxUploadSize" value="#{1024*1024*10}"/>
+    </bean>
 </beans>

@@ -43,6 +43,12 @@ public interface FactoryService {
      * 删除部门
      */
     void delete(String id);
+
+    /*
+        根据工厂名字查询工厂对象
+     */
+    Factory findByFactoryName(String factoryName);
+
 }
 
 

@@ -21,4 +21,7 @@ public interface ContractDao {
 
 	//更新
     int updateByPrimaryKeySelective(Contract record);
+
+    //大区经理查看购销合同
+    List<Contract> findByDeptId(String deptId);
 }
