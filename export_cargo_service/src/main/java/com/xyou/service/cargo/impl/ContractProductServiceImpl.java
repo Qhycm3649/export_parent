@@ -8,6 +8,7 @@ import com.xyou.dao.cargo.ContractProductDao;
 import com.xyou.dao.cargo.ExtCproductDao;
 import com.xyou.domain.cargo.*;
 import com.xyou.service.cargo.ContractProductService;
+import com.xyou.vo.ContractProductVo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -155,5 +156,11 @@ public class ContractProductServiceImpl implements ContractProductService {
         //更新购销合同
         contractDao.updateByPrimaryKeySelective(contract);
 
+    }
+
+    //根据船期查询出货表
+    @Override
+    public List<ContractProductVo> findByShipTime(String shipTime, String companyId) {
+        return contractProductDao.findByShipTime(shipTime,companyId);
     }
 }

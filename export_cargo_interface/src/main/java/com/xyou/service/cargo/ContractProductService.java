@@ -3,6 +3,7 @@ package com.xyou.service.cargo;
 import com.github.pagehelper.PageInfo;
 import com.xyou.domain.cargo.ContractProduct;
 import com.xyou.domain.cargo.ContractProductExample;
+import com.xyou.vo.ContractProductVo;
 
 import java.util.List;
 
@@ -45,6 +46,10 @@ public interface ContractProductService {
      * 删除部门
      */
     void delete(String id);
+
+    //根据船期查询出货表
+    List<ContractProductVo> findByShipTime(String shipTime, String companyId);
+
 }
 
 
