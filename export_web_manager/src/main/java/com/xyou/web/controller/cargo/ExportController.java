@@ -6,7 +6,12 @@ import com.xyou.domain.cargo.*;
 import com.xyou.service.cargo.ContractService;
 import com.xyou.service.cargo.ExportProductService;
 import com.xyou.service.cargo.ExportService;
+import com.xyou.vo.ExportProductVo;
+import com.xyou.vo.ExportResult;
+import com.xyou.vo.ExportVo;
 import com.xyou.web.controller.system.BaseController;
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -131,5 +136,96 @@ public class ExportController extends BaseController {
         request.setAttribute("eps", exportProductList);
 
         return "cargo/export/export-update";
+    }
+
+
+    /*
+   作用： 查看报运单
+   路径：/cargo/export/toView.do?id=26121e37-9e05-4167-8be7-f8675f8dcab6
+   参数： 报运单id
+   返回值：cargo/export/export-view
+  */
+    @RequestMapping("/toView")
+    public String toView(String id) {
+        Export export = exportService.findById(id);
+        request.setAttribute("export", export);
+        return "cargo/export/export-view";
+    }
+
+    /*
+        作用： 提交报运单
+        路径：/cargo/export/submit.do?id=26121e37-9e05-4167-8be7-f8675f8dcab6
+        参数： 报运单id
+        返回值：报运单列表
+    */
+    @RequestMapping("/submit")
+    public String submit(String id) {
+        Export export = exportService.findById(id);
+        export.setState(1);
+        exportService.update(export);
+        return "redirect:/cargo/export/list.do";
+    }
+
+    /*
+      作用： 取消报运单
+      路径：/cargo/export/cancel.do?id=26121e37-9e05-4167-8be7-f8675f8dcab6
+      参数： 报运单id
+      返回值：报运单列表
+  */
+    @RequestMapping("/cancel")
+    public String cancel(String id) {
+        Export export = exportService.findById(id);
+        export.setState(0);
+        exportService.update(export);
+        return "redirect:/cargo/export/list.do";
+    }
+
+    /*
+        作用： 电子报运
+        路径：/cargo/export/exportE.do?id=26121e37-9e05-4167-8be7-f8675f8dcab6
+        参数： 报运单id
+        返回值：报运单列表
+    */
+    @RequestMapping("/exportE")
+    public String exportE(String id) {
+        //1 根据id找到对应的报运单 Export对象
+        Export export = exportService.findById(id);
+
+        //2 创建ExportVo对象，目标是把Export的数据复制到ExportVo对象，因为需要与海关实体类一致
+        ExportVo exportVo = new ExportVo();
+            //属性拷贝
+        BeanUtils.copyProperties(export, exportVo);
+            //补充数据
+        exportVo.setExportId(export.getId());
+
+        //3 找到报运单对应的商品的数据
+        ExportProductExample exportProductExample = new ExportProductExample();
+        exportProductExample.createCriteria().andExportIdEqualTo(id);
+        List<ExportProduct> productList = exportProductService.findAll(exportProductExample);
+
+        //4 需要把商品的数据转换为ExportProductVo对象
+        for (ExportProduct exportProduct : productList) {
+            //每一个报运单的商品就对应一个ExportProductVo
+            ExportProductVo exportProductVo = new ExportProductVo();
+            //拷贝属性
+            BeanUtils.copyProperties(exportProduct,exportProductVo);
+            //补充数据
+            exportProductVo.setExportId(export.getId());
+            //商品的id
+            exportProductVo.setExportProductId(exportProduct.getId());
+            //把exportProductVo对象添加到ExportVo对象
+            exportVo.getProducts().add(exportProductVo);
+        }
+
+        //5 把ExprotVo对象通过WebService提交给海关
+        WebClient.create("http://localhost:9091/ws/export/user").post(exportVo);
+
+        //6 查看报运单的审核结果
+        ExportResult exportResult = WebClient.create("http://localhost:9091/ws/export/user/" + id).get(ExportResult.class);
+
+        //7 根据海关的审核结果更新报运单的信息
+        exportService.updateState(exportResult);
+            //返回
+        return "redirect:/cargo/export/list.do";
     }
 }

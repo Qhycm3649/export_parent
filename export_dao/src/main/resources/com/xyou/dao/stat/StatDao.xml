@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace名称空间，名称空间代表该xml文件映射是哪个接口-->
+<mapper namespace="com.xyou.dao.stat.StatDao">
+
+    <!--//得到厂家的销售数据-->
+    <select id="getFactoryData" resultType="map">
+      SELECT p.`factory_name` `name`,SUM(p.`amount`) `value` FROM co_contract_product p
+      WHERE p.`company_id`=#{companyId} GROUP BY p.`factory_name`
+    </select>
+
+</mapper>

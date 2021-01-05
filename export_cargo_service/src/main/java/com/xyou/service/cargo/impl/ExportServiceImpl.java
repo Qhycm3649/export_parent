@@ -6,6 +6,8 @@ import com.github.pagehelper.PageInfo;
 import com.xyou.dao.cargo.*;
 import com.xyou.domain.cargo.*;
 import com.xyou.service.cargo.ExportService;
+import com.xyou.vo.ExportProductResult;
+import com.xyou.vo.ExportResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,6 +45,26 @@ public class ExportServiceImpl implements ExportService {
         //3 /.构建一个PageInfo
         PageInfo<Export> pageInfo = new PageInfo<>(list);
         return pageInfo;
+    }
+
+    //根据海关的审核结果更新报运单的信息
+    @Override
+    public void updateState(ExportResult exportResult) {
+        //1 找到对应的报运单
+        Export export = exportDao.selectByPrimaryKey(exportResult.getExportId());
+        //2 跟新报运单的状态
+        export.setState(exportResult.getState());
+        exportDao.updateByPrimaryKeySelective(export);
+        //3 找到货物，跟新货物的税收
+        Set<ExportProductResult> products = exportResult.getProducts();
+        if (products != null) {
+            for (ExportProductResult productResult : products) {
+                ExportProduct exportProduct = exportProductDao.selectByPrimaryKey(productResult.getExportProductId());
+                //更新商品的税收
+                exportProduct.setTax(productResult.getTax());
+                exportProductDao.updateByPrimaryKeySelective(exportProduct);
+            }
+        }
     }
 
     //根据条件查询全部的报运单

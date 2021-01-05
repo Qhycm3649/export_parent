@@ -25,39 +25,51 @@
 <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="../../plugins/echarts/echarts.min.js"></script>
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
+    $.ajax({
+        url:"/stat/getFactoryData.do",
+        type:"get",
+        dataType:"json",
+        success:function(resultData){
+            // 3.1 找到div
+            var myChart = echarts.init(document.getElementById('main'));
 
-    // 指定图表的配置项和数据
-    $.get('/stat/factoryCharts.do').done(function (data) {
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption({
-            title : {
-                text: '厂家销售统计',
-                subtext: '',
-                x:'center'
-            },
-            tooltip : {
-                trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
-            },
-            series : [
-                {
-                    name: '访问来源',
-                    type: 'pie',
-                    radius : '55%',
-                    center: ['50%', '60%'],
-                    data:data,
-                    itemStyle: {
+            //3.2 准备报表图的数据
+            option = {
+                title: {
+                    text: '某站点用户访问来源',
+                    subtext: '纯属虚构',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                },
+                series: [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data: resultData,
                         emphasis: {
-                            shadowBlur: 10,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
                         }
                     }
-                }
-            ]
-        })
+                ]
+            };
+            // 3.3 把数据与div整合到一块
+            myChart.setOption(option);
+        }
     });
+
 </script>
 </html>

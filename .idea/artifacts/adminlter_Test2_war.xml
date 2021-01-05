@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="adminlter_Test2:war">
+    <output-path>F:/java/saas/adminlter_Test2/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>adminlter_Test2</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="adminlter_Test2-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="adminlter_Test2:war exploded" />
+    </root>
+  </artifact>
+</component>

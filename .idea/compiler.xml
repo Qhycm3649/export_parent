@@ -9,10 +9,12 @@
         <module name="export_dao" />
         <module name="export_company_service" />
         <module name="export_company_interface" />
+        <module name="export_stat_interface" />
         <module name="export_web_portal" />
         <module name="adminlter_Test2" />
         <module name="export_web_manager" />
         <module name="export_domain" />
+        <module name="export_stat_service" />
         <module name="export_cargo_service" />
         <module name="export_system_service" />
         <module name="export_cargo_interface" />
@@ -21,6 +23,19 @@
     <bytecodeTargetLevel>
       <module name="adminlte_demo" target="1.8" />
       <module name="adminlter_Test1" target="1.8" />
+      <module name="adminlter_Test2" target="1.8" />
+      <module name="export_cargo_interface" target="1.8" />
+      <module name="export_cargo_service" target="1.8" />
+      <module name="export_company_interface" target="1.8" />
+      <module name="export_company_service" target="1.8" />
+      <module name="export_dao" target="1.8" />
+      <module name="export_domain" target="1.8" />
+      <module name="export_parent" target="1.8" />
+      <module name="export_stat_interface" target="1.8" />
+      <module name="export_stat_service" target="1.8" />
+      <module name="export_system_service" target="1.8" />
+      <module name="export_web_manager" target="1.8" />
+      <module name="export_web_portal" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
