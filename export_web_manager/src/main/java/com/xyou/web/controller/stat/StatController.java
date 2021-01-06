@@ -26,18 +26,45 @@ public class StatController extends BaseController {
     public String toCharts(String chartsType){
         return "stat/stat-"+chartsType;
     }
-/*
 
+    /*
     作用：提供厂家的销售额数据
     url:  /stat/getFactoryData.do
     参数：无
-    返回值： 厂家的销售额json数据*/
-
-
+    返回值： 厂家的销售额json数据
+    */
     @RequestMapping("/getFactoryData")
     @ResponseBody
     public   List<Map<String, Object>> getFactoryData(String chartsType){
         List<Map<String, Object>> list = statService.getFactoryData(getLoginCompanyId());
+        return list;
+    }
+
+    /*
+        作用：提供厂家的销售排行数据
+        url:  /stat/getFactoryData.do
+        参数：无
+        返回值： 厂家的销售排行json数据
+    */
+    @RequestMapping("/getSellData")
+    @ResponseBody
+    public   List<Map<String, Object>> getSellData(String chartsType){
+        List<Map<String, Object>> list = statService.getSellData(getLoginCompanyId());
+        return list;
+    }
+
+    /*
+        作用：统计每小时访问人数
+        url: /stat/getOnlineData.do
+        参数：无
+        返回数据： 统计每小时访问人数
+    */
+    //前端同步请求，后端需要保存到域中，然后返回给前端查询
+    //异步加载的话则不需要保存到域中
+    @RequestMapping("/getOnLineData")
+    @ResponseBody
+    public   List<Map<String, Object>> getOnLineData(String chartsType){
+        List<Map<String, Object>> list = statService.getOnLineData();
         return list;
     }
 }

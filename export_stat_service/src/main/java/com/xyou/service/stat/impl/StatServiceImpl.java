@@ -19,4 +19,16 @@ public class StatServiceImpl implements StatService {
     public List<Map<String, Object>> getFactoryData(String companyId) {
         return statDao.getFactoryData(companyId);
     }
+
+    //产品销售排行榜
+    @Override
+    public List<Map<String, Object>> getSellData(String companyId) {
+        return statDao.getSellData(companyId);
+    }
+
+    //得到系统访问压力图
+    @Override
+    public List<Map<String, Object>> getOnLineData() {
+        return statDao.getOnLineData();
+    }
 }

@@ -5,10 +5,23 @@
 <!-- namespace名称空间，名称空间代表该xml文件映射是哪个接口-->
 <mapper namespace="com.xyou.dao.stat.StatDao">
 
-    <!--//得到厂家的销售数据-->
+    <!--得到厂家的销售数据-->
     <select id="getFactoryData" resultType="map">
       SELECT p.`factory_name` `name`,SUM(p.`amount`) `value` FROM co_contract_product p
       WHERE p.`company_id`=#{companyId} GROUP BY p.`factory_name`
     </select>
 
+    <!--得到产品销售排行榜-->
+    <select id="getSellData" resultType="map">
+      SELECT p.product_no `name`,SUM(p.amount) `value` FROM `co_contract_product` p
+      WHERE p.`company_id` = '1' GROUP BY p.product_no ORDER BY SUM(p.amount) DESC LIMIT 5
+    </select>
+
+    <!--得到系统访问压力图-->
+    <select id="getOnLineData" resultType="map">
+      SELECT i.`A1` `name`, IFNULL(temp.num,0) `value` FROM st_online_info i LEFT JOIN (
+      SELECT DATE_FORMAT(l.`time`,'%H') h,COUNT(*) num
+      FROM st_sys_log l GROUP BY DATE_FORMAT(l.`time`,'%H')) temp
+      ON i.`A1` = temp.h
+    </select>
 </mapper>

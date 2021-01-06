@@ -25,7 +25,7 @@
     </section>
     <section class="content">
         <div class="box box-primary">
-            <div id="main" style="width: 600px;height:400px;"></div>
+            <div id="main" style="width: 1000px;height:400px;"></div>
         </div>
     </section>
 </div>
@@ -34,34 +34,41 @@
 <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="../../plugins/echarts/echarts.min.js"></script>
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
-
-    $.get('/stat/sellCharts.do').done(function (data) {
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(
+    $.ajax({
+        url:"/stat/getSellData.do",
+        type:"get",
+        dataType:"json",
+        success:function(resultData){
+            // 3.1 找到div
+            var myChart = echarts.init(document.getElementById('main'));
+            //定义两个变量接收参数
+            var nameData = [];
+            var valueData = [];
+            //遍历resultData
+            for (var i = 0; i < resultData.length; i++) {
+                var obj = resultData[i];
+                nameData[i] = obj.name;
+                valueData[i] = obj.value;
+            }
+            //3.2 准备报表图的数据
             option = {
-                title: {
-                    left: 'center',
-                    text: '产品销量排行',
-                },
                 xAxis: {
                     type: 'category',
-                    data: data.title,
-                    axisLabel: {
-                        rotate:70
-                    }
+                    data: nameData
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [{
-                    data: data.value,
+                    data: valueData,
                     type: 'bar'
                 }]
-            }
-        )
+            };
+            // 3.3 把数据与div整合到一块
+            myChart.setOption(option);
+        }
     });
+
 </script>
 
 </html>

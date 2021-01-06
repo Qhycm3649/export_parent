@@ -10,14 +10,24 @@ import com.xyou.vo.ExportProductVo;
 import com.xyou.vo.ExportResult;
 import com.xyou.vo.ExportVo;
 import com.xyou.web.controller.system.BaseController;
+import com.xyou.web.controller.utils.BeanMapUtils;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.sql.DataSource;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 //合同管理
 @Controller
@@ -32,6 +42,9 @@ public class ExportController extends BaseController {
 
     @Reference
     private ExportProductService exportProductService;
+
+    @Autowired
+    private DataSource dataSource;
 
     /*
         作用： 进入合同列表页面
@@ -227,5 +240,67 @@ public class ExportController extends BaseController {
         exportService.updateState(exportResult);
             //返回
         return "redirect:/cargo/export/list.do";
+    }
+
+
+    /*
+       作用： 下载报运单
+       url:  /cargo/export/exportPdf.do?id=4028d3cf567275410156735276210001
+       参数：报运单的id
+       返回值 : 下载
+    */
+    @RequestMapping("/exportPdf")
+    @ResponseBody
+    public void exportPdf(String id) throws Exception {
+
+        //1 得到模板的输入流
+        /*InputStream in = session.getServletContext().getResourceAsStream("/jasper/test06.jasper");
+        //2 把模板域数据填充，拿到JasperPrint对象（数据+模板结合）
+        *//*Map<String,Object> map = new HashMap<>();
+        map.put("username","哥");
+        map.put("email","go@163.com");
+        map.put("companyName","网易");
+        map.put("deptName","公关");*//*
+
+        List<Map<String,Object>> list = new ArrayList<>();
+        for (int i = 1; i <=4 ; i++) {
+            Map<String,Object> map = new HashMap<>();
+            //一个饼有两个数据，title，value
+            map.put("title","安踏"+i);
+            map.put("value",new Random().nextInt(100));
+            list.add(map);
+        }
+        //把list集合的数据交给数据源
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(in, new HashMap<>(),  dataSource);
+        //3. 把pdf文件输出
+        *//*
+            exportReportToPdfStream(JasperPrint jasperPrint, OutputStream outputStream)
+                    jasperPrint： jasperprint的对象
+                    outputStream: 输出的目标地址的输出流对象
+         *//*
+        JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());*/
+
+        //通知浏览器以附件的形式下载
+        response.setHeader("context-disposition","attachment;filename=export.pdf");
+
+        //1 得到模板的输入流
+        InputStream in = session.getServletContext().getResourceAsStream("/jasper/export.jasper");
+        //2 把模板与数据填充，拿到jasperPrint对象
+            //根据id查找到报运单
+        Export export = exportService.findById(id);
+            //由于export是不需要遍历的数据应该存放在map中
+        Map<String, Object> map = BeanMapUtils.beanToMap(export);
+            //查找报运单下的所有货物
+        ExportProductExample exportProductExample = new ExportProductExample();
+        exportProductExample.createCriteria().andExportIdEqualTo(id);
+        List<ExportProduct> productList = exportProductService.findAll(exportProductExample);
+            //把集合封装到数据原中
+        JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(productList);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(in, map, jrBeanCollectionDataSource);
+
+        //3 把pdf输出
+        JasperExportManager.exportReportToPdfStream(jasperPrint,response.getOutputStream());
     }
 }
